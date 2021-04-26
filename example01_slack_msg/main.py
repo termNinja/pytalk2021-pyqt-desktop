@@ -1,7 +1,9 @@
+from PyQt5 import QtGui
+from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import *
 
 from MainWindow import Ui_MainWindow
-from example01_slack_msg.SlackMsg import SlackMsgDispatcher
+from example01_slack_msg.slack_controller import SlackController
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -18,7 +20,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # TODO -> Properly read channels -> demonstrate Qt list model-view here
         # TODO -> Properly read users
         # TODO -> Properly set token, channels and users
-        self.slack_msg: SlackMsgDispatcher = None
+        self.slack_controller: SlackController = None
         self.target_channel = "C01VA397NCT"
 
         self.gbChannels.setEnabled(False)
@@ -36,8 +38,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_connect(self):
         token = self.leSlackToken.text()
-        self.slack_msg: SlackMsgDispatcher = SlackMsgDispatcher(token)
-        if self.slack_msg.status['ok']:
+        self.slack_controller: SlackController = SlackController(token)
+        if self.slack_controller.status['ok']:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Connection information")
@@ -45,22 +47,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.exec_()
             self.gbChannels.setEnabled(True)
             self.gbMessage.setEnabled(True)
-            resp = self.slack_msg.list_channels()
-            for c in resp:
-                print(c)
-            pass
+            model = QtGui.QStandardItemModel()
+            self.lvChannels.setModel(model)
+            for conv in self.slack_controller.conversations:
+                item = QtGui.QStandardItem(conv.name)
+                model.appendRow(item)
+
         else:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Connection information")
             msg.setText("Connection failed!")
-            msg.setDetailedText(self.slack_msg.status['error'])
+            msg.setDetailedText(self.slack_controller.status['error'])
             msg.exec_()
 
     def handle_send(self):
-        # Parse token
+        q_model_index: QModelIndex = self.lvChannels.currentIndex()
+        i = q_model_index.row()
+        target_conversation = self.slack_controller.conversations[i]
         msg = self.teMsg.toPlainText()
-        self.slack_msg.send_msg_to_channel(msg, self.target_channel)
+        self.slack_controller.send_msg_to_channel(msg, target_conversation.id)
 
 
 if __name__ == '__main__':

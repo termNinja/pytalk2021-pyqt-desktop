@@ -1,15 +1,18 @@
+from typing import List
+
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 from example01_slack_msg.SlackConversation import SlackConversation
 
 
-class SlackMsgDispatcher:
+class SlackController:
     def __init__(self, token):
         self.client: WebClient = None
         try:
             self.client = WebClient(token)
             self.status = self.client.api_test()
+            self.conversations: List[SlackConversation] = self.list_channels()
         except SlackApiError as e:
             self.status = e.response.data
 
@@ -25,9 +28,7 @@ class SlackMsgDispatcher:
 
     def send_msg_to_channel(self, msg, channel_id):
         try:
-            # Call the chat.postMessage method using the WebClient
             result = self.client.chat_postMessage(channel=channel_id, text=msg)
-
             print(result)
 
         except SlackApiError as e:

@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file alias="sample">images/sample.png</file>
+        <file alias="icon">images/icon.png</file>
+        <file alias="the_end">images/secret.jpg</file>
+    </qresource>
+</RCC>

@@ -1,9 +1,13 @@
+from typing import Optional
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import QModelIndex
 from PyQt5.QtWidgets import *
 
 from MainWindow import Ui_MainWindow
 from example01_slack_msg.slack_controller import SlackController
+
+import resources
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -14,19 +18,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
-
         self.set_event_handlers()
 
-        # TODO -> Properly read channels -> demonstrate Qt list model-view here
-        # TODO -> Properly read users
-        # TODO -> Properly set token, channels and users
-        self.slack_controller: SlackController = None
-        self.target_channel = "C01VA397NCT"
+        # Load icon image from QResources file. We use `import resources` to accomplish this.
+        self.setWindowIcon(QtGui.QIcon(':/icon'))
 
-        self.gbChannels.setEnabled(False)
-        self.gbMessage.setEnabled(False)
+        self.slack_controller: Optional[SlackController] = None
+        self.set_msg_controls_visibility(False)
 
         self.show()
+
+    def set_msg_controls_visibility(self, visibility: bool):
+        self.gbChannels.setEnabled(visibility)
+        self.gbMessage.setEnabled(visibility)
 
     def set_event_handlers(self):
         self.actionQuit.triggered.connect(self.handle_quit)
@@ -45,8 +49,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setWindowTitle("Connection information")
             msg.setText("Connection success!")
             msg.exec_()
-            self.gbChannels.setEnabled(True)
-            self.gbMessage.setEnabled(True)
+            self.set_msg_controls_visibility(True)
             model = QtGui.QStandardItemModel()
             self.lvChannels.setModel(model)
             for conv in self.slack_controller.conversations:

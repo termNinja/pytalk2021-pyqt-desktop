@@ -13,3 +13,6 @@ do
         echo "Compiled $val.ui"
     fi
 done
+
+echo "Compiling resources to resources_rc.py"
+pyrcc5 -o resources_rc.py resources.qrc

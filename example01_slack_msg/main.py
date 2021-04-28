@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from MainWindow import Ui_MainWindow
 from example01_slack_msg.slack_controller import SlackController
 
-import resources
+import resources_rc
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):

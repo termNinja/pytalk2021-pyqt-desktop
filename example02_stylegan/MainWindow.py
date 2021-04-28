@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Dogs are nice!"))
         self.pbGenerateRandom.setText(_translate("MainWindow", "Generate Random"))
         self.leSeed.setText(_translate("MainWindow", "265"))
         self.lblSeed.setText(_translate("MainWindow", "Seed"))

@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import *
 from MainWindow import Ui_MainWindow
 from example01_slack_msg.slack_controller import SlackController
 
+# Required to be imported in order for assets to be available.
+# Other option is to have it included inside of the UI file (next example).
 import resources_rc
 
 
